@@ -13,7 +13,7 @@ import Element as E
 import Collage as C
 import Task
 
-import Html.App
+import Html exposing (program, map)
 
 --import Diagrams.Wiring exposing (..)
 import Diagrams.Svg
@@ -63,7 +63,7 @@ type Msg a
   | Resize Dims
 
 
-fullWindowProgram : { view : m -> Diagram t a, model : m, update : a -> m -> m } -> Program Never
+fullWindowProgram : { view : m -> Diagram t a, model : m, update : a -> m -> m } -> Program Never ( Dims, m ) (Msg a)
 fullWindowProgram app =
   let
     initialDims =
@@ -85,18 +85,18 @@ fullWindowProgram app =
         Resize newDims ->
           ((newDims, state), Cmd.none)
   in
-    Html.App.program
+    Html.program
       { init =
           ( (initialDims, app.model)
             -- ugh this is a Task Never; which I didn't have to tag it
-          , Task.perform (always (Resize initialDims)) toFloatDims Window.size
+          , Task.perform (always (Resize initialDims)) Window.size
           )
       , update = update
-      , view = \(dims, state) -> Diagrams.Svg.toHtml dims (app.view state) |> Html.App.map DiagramMsg
+      , view = \(dims, state) -> Diagrams.Svg.toHtml dims (app.view state) |> Html.map DiagramMsg
       , subscriptions = \_ -> Window.resizes toFloatDims
       }
 
 
-fullWindowShow : Diagram t a -> Program Never
+fullWindowShow : Diagram t a -> Program Never ( Dims, () ) (Msg a)
 fullWindowShow dia =
   fullWindowProgram { view = always dia, model = (), update = \_ _ -> () }

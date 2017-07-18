@@ -5,7 +5,6 @@ import Element
 import Collage
 import Window
 import Html exposing (Html)
-import Html.App as App
 
 import Color
 import Debug
@@ -76,17 +75,17 @@ testDia =
       tag Textt <| background (justSolidFill Color.lightBlue) <| pad 5 <| justText
 
     stuff =
-      circ `atop` (rectOrange `above` (rectBlue `beside` (circ `above` someText)))
+      circ |> atop (rectOrange |> above (rectBlue |> beside (circ |> above someText)))
 
     moreStuff =
       hcat <| List.intersperse circ (List.repeat 5 rectOrange)
   in
     --stuff `above` stuff `above` moreStuff
-    (rectOrange `above` rectBlue)
+    (rectOrange |> above rectBlue)
     |> alignCenter
     --|> showBBox
     --|> showOrigin
 
 
 main =
-  fullWindowProgram testDia
+  fullWindowShow testDia

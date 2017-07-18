@@ -37,7 +37,7 @@ type Transform
 
 {-|-}
 applyTrans : Transform -> Point -> Point
-applyTrans trans (x, y) = 
+applyTrans trans (x, y) =
   case trans of
     Scale s -> (x*s, y*s)
     Rotate angle -> let c = cos angle
@@ -74,7 +74,7 @@ pointNegate (x, y) = (-x, -y)
 
 {-|-}
 pointSubtract : Point -> Point -> Point
-pointSubtract a b = a `pointAdd` (pointNegate b)
+pointSubtract a b = a |> pointAdd (pointNegate b)
 
 -- Boxes
 

@@ -8,7 +8,7 @@ import Svg.Attributes as SvgA
 import Color exposing (Color)
 import Element as E
 
-import List.Extra
+import List exposing (singleton)
 import Collage
 
 import Diagrams.Geom exposing (..)
@@ -23,7 +23,7 @@ toSvg d =
     getFillColor : FillStroke -> Maybe Color
     getFillColor fillStroke =
       fillStroke.fill
-      `Maybe.andThen` (\fill ->
+      |> Maybe.andThen (\fill ->
         case fill of
           Solid color ->
             Just color
@@ -33,14 +33,14 @@ toSvg d =
               "TODO: gradients, etc. probably just use Svg stuff"
               Nothing
       )
-    
+
     getFillAttr : FillStroke -> List (Svg.Attribute a)
     getFillAttr fillStroke =
       fillStroke
       |> getFillColor
       |> Maybe.map (\color -> SvgA.fill (colorToCss color))
       |> Maybe.withDefault (SvgA.fill "none")
-      |> List.Extra.singleton
+      |> List.singleton
 
     fromLineStyle : Collage.LineStyle -> List (Svg.Attribute a)
     fromLineStyle lineStyle =
@@ -86,19 +86,19 @@ toSvg d =
       TransformD (Scale s) dia ->
         dia
         |> toSvg
-        |> List.Extra.singleton
+        |> List.singleton
         |> Svg.g []
 
       TransformD (Rotate r) dia ->
         dia
         |> toSvg
-        |> List.Extra.singleton
+        |> List.singleton
         |> Svg.g [ SvgA.transform ("rotate(" ++ toString (lerp (0, 360) (0, pi * 2) -r) ++ ")") ]
 
       TransformD (Translate x y) dia ->
         dia
         |> toSvg
-        |> List.Extra.singleton
+        |> List.singleton
         |> Svg.g [ SvgA.transform ("translate(" ++ toString x ++ " " ++ toString (-y) ++ ")") ]
 
       Text str ts te ->
@@ -107,7 +107,7 @@ toSvg d =
             (toFloat x) / 2
             |> toString
         in
-          Svg.text'
+          Svg.text_
             [ SvgA.fill (colorToCss ts.color)
             , SvgA.fontWeight (if ts.bold then "bold" else "normal")
             , SvgA.fontStyle (if ts.italic then "italic" else "normal")
@@ -164,12 +164,12 @@ toHtml dims dia =
   in
     dia
     |> toSvg
-    |> List.Extra.singleton
+    |> List.singleton
     |> Svg.svg
         [ SvgA.width (toString dims.width)
         , SvgA.height (toString dims.height)
         , SvgA.viewBox
-            (toString minX ++ " " 
+            (toString minX ++ " "
               ++ toString minY ++ " "
               ++ toString dims.width ++ " "
               ++ toString dims.height)

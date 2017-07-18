@@ -5,7 +5,6 @@ import Element
 import Collage
 import Window
 import Html exposing (Html)
-import Html.App as App
 
 import Color
 import Debug

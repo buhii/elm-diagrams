@@ -62,7 +62,7 @@ import Transform
 import Color
 
 import Html exposing (Html)
-import List.Extra
+import List exposing (singleton)
 
 import Diagrams.Geom exposing (..)
 import Diagrams.FillStroke exposing (..)
@@ -115,7 +115,7 @@ on top of one another. This is the same as `zcat`. The first diagram in the list
 group : List (Type.Diagram t a) -> Type.Diagram t a
 group = Group
 
-{-| Return a Tag node with the given Diagram as its sole child. Adding this to the 
+{-| Return a Tag node with the given Diagram as its sole child. Adding this to the
 diagram tree is useful for picking and getting coordinates. -}
 tag : t -> Type.Diagram t a -> Type.Diagram t a
 tag t dia = Tag t emptyActionSet dia
@@ -136,7 +136,7 @@ ngon n r fs =
   let m = toFloat n
       t = 2 * pi / m
       f i = ( r * cos ((t*i) + pi/2), r * sin ((t*i) + pi/2) )
-  in polygon (L.map f [0..m-1]) fs
+  in polygon (L.map f (L.map toFloat (L.range 0 (round m - 1)))) fs
 
 -- basic transformations
 
@@ -210,7 +210,7 @@ toHtml : Dims -> Type.Diagram t a -> Html x
 toHtml dims dia =
   dia
   |> toForm
-  |> List.Extra.singleton
+  |> List.singleton
   |> C.collage (truncate dims.width) (truncate dims.height)
   |> E.toHtml
 

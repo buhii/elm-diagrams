@@ -17,7 +17,7 @@ import Diagrams.Type exposing (..)
 {-| Draw a red dot at `(0, 0)` in the diagram's local vector space. -}
 showOrigin : Diagram t a -> Diagram t a
 showOrigin d = let originPoint = circle 3 <| justFill <| Solid Color.red
-               in originPoint `atop` d
+               in originPoint |> atop d
 
 {-| Draw a red dot box around a diagram. -}
 showBBox : Diagram t a -> Diagram t a

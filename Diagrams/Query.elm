@@ -20,6 +20,20 @@ import Diagrams.FillStroke exposing (..)
 import Diagrams.Type as T
 import Diagrams.RealType exposing (..)
 
+{-| FIXME
+  https://github.com/elm-lang/core/blob/4.0.0/src/Maybe.elm#L65 -}
+oneOf : List (Maybe a) -> Maybe a
+oneOf maybes =
+  case maybes of
+    [] ->
+        Nothing
+
+    maybe :: rest ->
+        case maybe of
+          Nothing -> oneOf rest
+          Just _ -> maybe
+
+
 {-| Result of `pick`: tree representing the subtree of the Diagram the
 given point is over.
 
@@ -77,7 +91,7 @@ pick diag point =
           [x] -> Just x
           xs -> Just <| PickLayers xs
 
-      Tag t acts diagram -> 
+      Tag t acts diagram ->
          pick diagram point
           |> M.map (\res ->
               PickTag
@@ -107,19 +121,19 @@ If it isn't found, return `Nothing`. -}
 getCoords : TagPath t -> T.Diagram t a -> Maybe Point
 getCoords path dia =
     let
-      recurse diag path start = 
+      recurse diag path start =
         case path of
           [] ->
             Just start
 
-          (x::xs) -> 
+          (x::xs) ->
             case diag of
               Tag t _ dia ->
                   if x == t
                   then recurse dia xs start
                   else Nothing
               Group dias ->
-                  M.oneOf <| L.map (\d -> recurse d path start) dias
+                  oneOf <| (L.map (\d -> recurse d path start) dias)
               TransformD trans dia ->
                   recurse dia path (applyTrans trans start)
               _ -> Nothing

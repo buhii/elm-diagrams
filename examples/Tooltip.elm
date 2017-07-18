@@ -23,20 +23,20 @@ tooltip dir fs tipSpacing dia =
   let mainBox = background fs (dia |> pad 3)
       triangle = eqTriangle 7 fs |> rotate (directionAngle dir - pi/2)
   in case dir of
-    Up    -> triangle `above`  mainBox  |> alignTop    |> moveY -tipSpacing
-    Down  -> mainBox  `above`  triangle |> alignBottom |> moveY tipSpacing
-    Left  -> triangle `beside` mainBox  |> alignLeft   |> moveX tipSpacing
-    Right -> mainBox  `beside` triangle |> alignRight  |> moveX -tipSpacing
+    Up    -> triangle |> above (mainBox  |> alignTop    |> moveY -tipSpacing)
+    Down  -> mainBox  |> above (triangle |> alignBottom |> moveY tipSpacing)
+    Left  -> triangle |> beside (mainBox  |> alignLeft   |> moveX tipSpacing)
+    Right -> mainBox  |> beside (triangle |> alignRight  |> moveX -tipSpacing)
 
 helloWorld : Direction -> Diagram t a
-helloWorld dir = 
+helloWorld dir =
   (text { defText | color = Color.white, height = Just 11 } "Hello World")
     |> tooltip dir (justSolidFill Color.black) 10
     |> showOrigin
     |> showBBox
 
 
-main = 
+main =
   [Up, Right, Down, Left]
   |> L.map (alignCenter << helloWorld)
   |> L.intersperse (hspace 10)
